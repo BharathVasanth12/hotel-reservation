@@ -1,0 +1,41 @@
+data_ingestion:
+  bucket_name: hotel_reservation_info
+  bucket_file_name: hotel_reservations.csv
+  train_ratio: 0.8
+
+data_preprocessing:
+  target_column: is_canceled
+  categorical_features:
+    - type_of_meal_plan
+    - room_type_reserved
+    - market_segment_type
+    - booking_status
+  numerical_features:
+    - no_of_adults
+    - no_of_children
+    - no_of_weekend_nights
+    - no_of_week_nights
+    - required_car_parking_space
+    - lead_time
+    - arrival_year
+    - arrival_month
+    - arrival_date
+    - repeated_guest
+    - no_of_previous_cancellations
+    - no_of_previous_bookings_not_canceled
+    - avg_price_per_room
+    - no_of_special_requests
+  skewed_features:
+    - no_of_special_requests
+    - avg_price_per_room
+    - no_of_weekend_nights
+  encoding:
+    label_encoding:
+      - booking_status
+    ohe_hot_encoding:
+      - type_of_meal_plan
+      - room_type_reserved
+      - market_segment_type
+  drop_multicollinearity_columns:
+    - market_segment_type_Online
+
