@@ -1,0 +1,45 @@
+requirements.txt
+  0e652c6ab4081e0a 13-15
+Dockerfile
+  h_0e3bc9359231c3 1-39
+app.py
+  0e652c6ab4081e0a 1-69
+DOCKER_GUIDE.md
+  0e652c6ab4081e0a 1-323
+docker-run.sh
+  0e652c6ab4081e0a 1-142
+WEB_APP_README.md
+  0e652c6ab4081e0a 1-140
+docker-compose.yml
+  0e652c6ab4081e0a 1-29
+templates/index.html
+  0e652c6ab4081e0a 1-18,33,37,49-50,52-56,59-65,68-69,72,75,77,80,83,86,89,92,96,98,101,103-112,119,122-123,127,132-134,145,153,162,386,390-397,399-425,430-676
+  h_0e3bc9359231c3 19-32,34-36,38-48,51,57-58,66-67,70-71,73-74,76,78-79,81-82,84-85,87-88,90-91,93-95,97,99-100,102,113-118,120-121,124-126,128-131,135-144,146-152,154-161,163-385,387-389,398,426-429
+.dockerignore
+  0e652c6ab4081e0a 1-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "671d2fad3bb3f17c91fc2fba12b74f0adcaf10c2",
+  "prompts": {
+    "0e652c6ab4081e0a": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "78505924-cb24-44f2-9749-2d4701599fec",
+        "model": "copilot/claude-sonnet-4.5"
+      },
+      "human_author": "bhavasan_cisco",
+      "messages": [],
+      "total_additions": 2467,
+      "total_deletions": 654,
+      "accepted_lines": 1484,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_0e3bc9359231c3": {
+      "author": "bhavasan_cisco"
+    }
+  }
+}
