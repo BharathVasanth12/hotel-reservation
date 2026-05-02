@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  hotel-reservation:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hotel-reservation-app
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Mount artifacts directory to persist model
+      - ./artifacts:/app/artifacts:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - hotel-network
+
+networks:
+  hotel-network:
+    driver: bridge

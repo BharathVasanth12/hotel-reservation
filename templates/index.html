@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Reservation Cancellation Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Header/Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 1.8em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            max-width: 1400px;
+            margin: 30px auto;
+            gap: 20px;
+            padding: 0 20px;
+            align-items: flex-start;
+        }
+
+        /* Left Sidebar Slider */
+        .left-slider {
+            position: sticky;
+            top: 90px;
+            width: 80px;
+            transition: width 0.4s ease;
+            z-index: 100;
+        }
+
+        .left-slider.open {
+            width: 350px;
+        }
+
+        .slider-toggle {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .slider-tab {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            min-height: 60px;
+        }
+
+        .slider-tab:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a3c8f 100%);
+        }
+
+        .slider-tab-icon {
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+        }
+
+        .left-slider.open .slider-tab-icon {
+            transform: rotate(180deg);
+        }
+
+        .slider-tab-text {
+            display: none;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        .left-slider.open .slider-tab-text {
+            display: inline;
+        }
+
+        .slider-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background: white;
+        }
+
+        .left-slider.open .slider-content {
+            max-height: 800px;
+        }
+
+        .slider-body {
+            padding: 25px;
+        }
+
+        .model-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .model-stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .model-stat-card h3 {
+            font-size: 2.2em;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .model-stat-card p {
+            color: #555;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .model-description {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.9em;
+        }
+
+        /* Main Container */
+        .container {
+            flex: 1;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            margin-bottom: 30px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-header h2 {
+            font-size: 2.2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .form-header .subtitle {
+            color: #666;
+            font-size: 1.05em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .field-info {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        input, select {
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-predict {
+            grid-column: 1 / -1;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-predict:active {
+            transform: translateY(0);
+        }
+
+        .result-section {
+            grid-column: 1 / -1;
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-cancelled {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+        }
+
+        .result-confirmed {
+            background: linear-gradient(135deg, #51cf66 0%, #37b679 100%);
+            color: white;
+        }
+
+        .result-section h3 {
+            font-size: 1.8em;
+            margin-bottom: 12px;
+        }
+
+        .result-section p {
+            font-size: 1.05em;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .probability-bar {
+            margin-top: 20px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .probability-fill {
+            height: 100%;
+            background: white;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .loader {
+            display: none;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader.show {
+            display: block;
+        }
+
+        @media (max-width: 968px) {
+            .main-layout {
+                flex-direction: column;
+            }
+
+            .left-slider {
+                position: relative;
+                width: 100%;
+                top: 0;
+            }
+
+            .left-slider.open {
+                width: 100%;
+            }
+
+            .slider-tab {
+                justify-content: space-between;
+            }
+
+            .slider-tab-text {
+                display: inline;
+            }
+
+            .model-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 30px 20px;
+            }
+
+            .form-header h2 {
+                font-size: 1.8em;
+            }
+
+            .navbar h1 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <h1>🏨 Hotel Reservation Cancellation Predictor</h1>
+        </div>
+    </nav>
+
+    <!-- Main Layout with Left Slider -->
+    <div class="main-layout">
+        <!-- Left Sidebar Slider -->
+        <div class="left-slider" id="leftSlider">
+            <div class="slider-toggle">
+                <div class="slider-tab" onclick="toggleLeftSlider()">
+                    <span class="slider-tab-icon">📊</span>
+                    <span class="slider-tab-text">Model Info</span>
+                </div>
+                <div class="slider-content">
+                    <div class="slider-body">
+                        <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.2em;">Performance Metrics</h3>
+                        <div class="model-stats-grid">
+                            <div class="model-stat-card">
+                                <h3>90.0%</h3>
+                                <p>F1-Score</p>
+                            </div>
+                            <div class="model-stat-card">
+                                <h3>91.4%</h3>
+                                <p>ROC-AUC</p>
+                            </div>
+                            <div class="model-stat-card">
+                                <h3>85.6%</h3>
+                                <p>Accuracy</p>
+                            </div>
+                            <div class="model-stat-card">
+                                <h3>90.9%</h3>
+                                <p>Recall</p>
+                            </div>
+                        </div>
+                        <div class="model-description">
+                            <p><strong>About the Model:</strong> XGBoost algorithm trained on 26,000+ reservations. 
+                            Analyzes 16 features including guest info, booking details, and patterns. 
+                            Preprocessed with outlier detection, Yeo-Johnson transformation, and SMOTE balancing.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form Container -->
+        <div class="container">
+            <div class="form-header">
+                <h2>Predict Booking Cancellation</h2>
+                <p class="subtitle">Enter reservation details to get cancellation probability prediction</p>
+            </div>
+
+            <form id="predictionForm">
+                <div class="form-grid">
+                    <!-- Guest Information -->
+                    <div class="form-group">
+                        <label for="adults">Number of Adults</label>
+                        <input type="number" id="adults" name="no_of_adults" min="1" max="4" value="2" required>
+                        <span class="field-info">Most common: 2 adults</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="children">Number of Children</label>
+                        <input type="number" id="children" name="no_of_children" min="0" max="10" value="0" required>
+                        <span class="field-info">Most common: 0 children</span>
+                    </div>
+
+                    <!-- Stay Details -->
+                    <div class="form-group">
+                        <label for="weekend_nights">Weekend Nights</label>
+                        <input type="number" id="weekend_nights" name="no_of_weekend_nights" min="0" max="5" value="1" required>
+                        <span class="field-info">Range: 0-5 nights</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="week_nights">Week Nights</label>
+                        <input type="number" id="week_nights" name="no_of_week_nights" min="0" max="7" value="2" required>
+                        <span class="field-info">Range: 0-7 nights</span>
+                    </div>
+
+                    <!-- Meal and Room -->
+                    <div class="form-group">
+                        <label for="meal_plan">Meal Plan</label>
+                        <select id="meal_plan" name="type_of_meal_plan" required>
+                            <option value="Meal Plan 1">Meal Plan 1 (Most Popular)</option>
+                            <option value="Not Selected">Not Selected</option>
+                            <option value="Meal Plan 2">Meal Plan 2</option>
+                            <option value="Meal Plan 3">Meal Plan 3</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="room_type">Room Type</label>
+                        <select id="room_type" name="room_type_reserved" required>
+                            <option value="Room_Type 1">Room Type 1 (Most Popular)</option>
+                            <option value="Room_Type 4">Room Type 4</option>
+                            <option value="Room_Type 6">Room Type 6</option>
+                            <option value="Room_Type 2">Room Type 2</option>
+                            <option value="Room_Type 5">Room Type 5</option>
+                            <option value="Room_Type 7">Room Type 7</option>
+                            <option value="Room_Type 3">Room Type 3</option>
+                        </select>
+                    </div>
+
+                    <!-- Additional Services -->
+                    <div class="form-group">
+                        <label for="parking">Car Parking Required</label>
+                        <select id="parking" name="required_car_parking_space" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lead_time">Lead Time (days in advance)</label>
+                        <input type="number" id="lead_time" name="lead_time" min="0" max="450" value="50" required>
+                        <span class="field-info">Range: 0-450 days</span>
+                    </div>
+
+                    <!-- Arrival Information -->
+                    <div class="form-group">
+                        <label for="arrival_month">Arrival Month</label>
+                        <select id="arrival_month" name="arrival_month" required>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6" selected>June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October (Peak)</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="arrival_date">Arrival Date</label>
+                        <input type="number" id="arrival_date" name="arrival_date" min="1" max="31" value="15" required>
+                        <span class="field-info">Day of month: 1-31</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="market_segment">Market Segment</label>
+                        <select id="market_segment" name="market_segment_type" required>
+                            <option value="Online">Online (Most Common)</option>
+                            <option value="Offline">Offline</option>
+                            <option value="Corporate">Corporate</option>
+                            <option value="Complementary">Complementary</option>
+                            <option value="Aviation">Aviation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="avg_price">Average Price per Room ($)</label>
+                        <input type="number" id="avg_price" name="avg_price_per_room" min="0" step="0.01" value="85.00" required>
+                        <span class="field-info">Range: $8 - $250</span>
+                    </div>
+
+                    <!-- Guest History -->
+                    <div class="form-group">
+                        <label for="repeated_guest">Repeated Guest</label>
+                        <select id="repeated_guest" name="repeated_guest" required>
+                            <option value="0">No (First Time)</option>
+                            <option value="1">Yes (Returning)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prev_cancellations">Previous Cancellations</label>
+                        <input type="number" id="prev_cancellations" name="no_of_previous_cancellations" min="0" max="50" value="0" required>
+                        <span class="field-info">Most common: 0</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prev_bookings">Previous Bookings (Not Cancelled)</label>
+                        <input type="number" id="prev_bookings" name="no_of_previous_bookings_not_canceled" min="0" max="50" value="0" required>
+                        <span class="field-info">Most common: 0</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="special_requests">Number of Special Requests</label>
+                        <input type="number" id="special_requests" name="no_of_special_requests" min="0" max="5" value="0" required>
+                        <span class="field-info">Range: 0-5 requests</span>
+                    </div>
+
+                    <button type="submit" class="btn-predict">🔮 Predict Cancellation Risk</button>
+                </div>
+
+                <div class="loader" id="loader"></div>
+
+                <div class="result-section" id="resultSection">
+                    <h3 id="resultTitle"></h3>
+                    <p id="resultMessage"></p>
+                    <div class="probability-bar">
+                        <div class="probability-fill" id="probabilityBar"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle left slider
+        function toggleLeftSlider() {
+            const slider = document.getElementById('leftSlider');
+            slider.classList.toggle('open');
+        }
+
+        // Form submission
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const loader = document.getElementById('loader');
+            const resultSection = document.getElementById('resultSection');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultMessage = document.getElementById('resultMessage');
+            const probabilityBar = document.getElementById('probabilityBar');
+            
+            // Show loader
+            loader.classList.add('show');
+            resultSection.classList.remove('show');
+            
+            // Collect form data
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            // Simulate API call (replace with actual endpoint)
+            setTimeout(() => {
+                // Mock prediction (replace with actual API call)
+                const mockCancellationProb = Math.random();
+                const willCancel = mockCancellationProb > 0.5;
+                
+                loader.classList.remove('show');
+                resultSection.classList.add('show');
+                
+                if (willCancel) {
+                    resultSection.className = 'result-section show result-cancelled';
+                    resultTitle.textContent = '⚠️ High Cancellation Risk';
+                    resultMessage.textContent = `This booking has a ${(mockCancellationProb * 100).toFixed(1)}% probability of being cancelled. Consider implementing retention strategies such as advance payment requirements, flexible cancellation policies, or personalized incentives to reduce cancellation risk.`;
+                } else {
+                    resultSection.className = 'result-section show result-confirmed';
+                    resultTitle.textContent = '✅ Low Cancellation Risk';
+                    resultMessage.textContent = `This booking has only a ${(mockCancellationProb * 100).toFixed(1)}% probability of cancellation. The booking is highly likely to be confirmed. You can proceed with confidence and prepare for the guest's arrival.`;
+                }
+                
+                probabilityBar.style.width = (mockCancellationProb * 100) + '%';
+                
+                // Scroll to result
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 1500);
+            
+            /* 
+            // Uncomment for actual API integration
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                loader.classList.remove('show');
+                resultSection.classList.add('show');
+                
+                if (result.prediction === 1) {
+                    resultSection.className = 'result-section show result-cancelled';
+                    resultTitle.textContent = '⚠️ High Cancellation Risk';
+                    resultMessage.textContent = `This booking has a ${(result.probability * 100).toFixed(1)}% probability of being cancelled.`;
+                } else {
+                    resultSection.className = 'result-section show result-confirmed';
+                    resultTitle.textContent = '✅ Low Cancellation Risk';
+                    resultMessage.textContent = `This booking has only a ${(result.probability * 100).toFixed(1)}% probability of cancellation.`;
+                }
+                
+                probabilityBar.style.width = (result.probability * 100) + '%';
+                
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } catch (error) {
+                loader.classList.remove('show');
+                alert('Error making prediction. Please try again.');
+            }
+            */
+        });
+    </script>
+</body>
+</html>

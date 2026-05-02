@@ -11,3 +11,5 @@ imblearn
 xgboost
 lightgbm
 mlflow
+flask
+joblib
