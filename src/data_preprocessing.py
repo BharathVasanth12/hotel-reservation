@@ -1,10 +1,8 @@
 from src.logger import logging
 from src.custom_exception import CustomException
-from config.paths_config import *
+from config.paths_config import CONFIG_FILE_PATH, PROCESSED_DIR, RAW_FILE_PATH
 from utils.common_functions import read_yaml_file, load_data
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder, PowerTransformer
-from imblearn.over_sampling import SMOTE
 
 import pandas as pd
 import numpy as np

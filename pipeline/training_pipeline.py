@@ -1,14 +1,10 @@
-
-
 import os
-import sys
 
 from config.paths_config import CONFIG_FILE_PATH, MODEL_OUTPUT_PATH, PROCESSED_DIR, RAW_FILE_PATH
 from src.data_ingestion import DataIngestion
 from src.data_preprocessing import DataPreprocessor
 from src.model_training import ModelTrainer
 from src.logger import logging
-from src.custom_exception import CustomException
 
 
 def run_training_pipeline():

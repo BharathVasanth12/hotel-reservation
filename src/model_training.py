@@ -13,11 +13,15 @@ warnings.filterwarnings('ignore', category=UserWarning, module='xgboost')
 warnings.filterwarnings('ignore', category=UserWarning, module='mlflow.types.utils')  # Schema hints
 warnings.filterwarnings('ignore', category=UserWarning, module='mlflow.models.model')  # Deprecation warnings
 
-from sklearn.metrics import ( accuracy_score, precision_score,
-                            f1_score, recall_score, roc_auc_score, classification_report,
-                            confusion_matrix, ConfusionMatrixDisplay, roc_curve)
+from sklearn.metrics import (
+    accuracy_score,
+    f1_score,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+)
 
-from config.paths_config import *
+from config.paths_config import CONFIG_FILE_PATH, MODEL_OUTPUT_PATH, PROCESSED_DIR
 from config.model_params import XGBOOST_FIXED_PARAMS, RANDOM_SEARCH_CV_CONFIG
 from src.logger import logging
 from src.custom_exception import CustomException
