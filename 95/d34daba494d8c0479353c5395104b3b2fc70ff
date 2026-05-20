@@ -1,0 +1,12 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "95d34daba494d8c0479353c5395104b3b2fc70ff",
+  "prompts": {},
+  "humans": {
+    "h_a8aabed4b6be09": {
+      "author": "bhavasan_cisco <bhavasan+cisco@cisco.com>"
+    }
+  }
+}
