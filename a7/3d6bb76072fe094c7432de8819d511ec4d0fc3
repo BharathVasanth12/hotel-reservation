@@ -1,0 +1,36 @@
+src/data_ingestion.py
+  h_a8aabed4b6be09 53
+src/data_preprocessing.py
+  h_a8aabed4b6be09 153
+.gitignore
+  s_38d42aa29f43d0::t_509847d4bbdd7d 221-231
+pipeline/training_pipeline.py
+  s_38d42aa29f43d0::t_3c5f69bf3e64c9 6
+README.md
+  h_a8aabed4b6be09 11-43,46-47,58,110,251-255,258
+  s_38d42aa29f43d0::t_fcb2bc6e249aa0 169-211
+  s_38d42aa29f43d0::t_bf2fdca3d321de 44-45
+templates/index.html
+  s_38d42aa29f43d0::t_60a1b7028f1af5 529-535
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "a73d6bb76072fe094c7432de8819d511ec4d0fc3",
+  "prompts": {},
+  "humans": {
+    "h_a8aabed4b6be09": {
+      "author": "bhavasan_cisco <bhavasan+cisco@cisco.com>"
+    }
+  },
+  "sessions": {
+    "s_38d42aa29f43d0": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "f5b51275-9c00-4a0b-a95d-ba1d685674cf",
+        "model": "gpt-4.1"
+      },
+      "human_author": "bhavasan_cisco <bhavasan+cisco@cisco.com>"
+    }
+  }
+}
