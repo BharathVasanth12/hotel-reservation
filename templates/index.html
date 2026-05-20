@@ -525,7 +525,14 @@
                         <input type="number" id="arrival_date" name="arrival_date" min="1" max="31" value="15" required>
                         <span class="field-info">Day of month: 1-31</span>
                     </div>
-
+                    <div class="form-group">
+                        <label for="arrival_year">Arrival Year</label>
+                        <select id="arrival_year" name="arrival_year" required>
+                            <option value="2017">2017</option>
+                            <option value="2018" selected>2018</option>
+                        </select>
+                        <span class="field-info">Training data range: 2017-2018</span>
+                    </div>
                     <div class="form-group">
                         <label for="market_segment">Market Segment</label>
                         <select id="market_segment" name="market_segment_type" required>

@@ -219,3 +219,13 @@ __marimo__/
 
 mlruns
 logs/
+# ML / project-specific artifacts
+artifacts/
+*.joblib
+*.pkl
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

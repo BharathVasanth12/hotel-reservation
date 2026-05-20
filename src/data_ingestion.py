@@ -50,7 +50,7 @@ class DataIngestion:
             else:
                 self.download_csv_from_gcp()
             logging.info(
-                "Train/test split runs in model_training.py after preprocessing."
+                "Train/test split runs in model_building.py after preprocessing."
             )
             logging.info("Data ingestion process completed successfully.")
         except Exception as e:

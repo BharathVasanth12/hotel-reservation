@@ -95,6 +95,9 @@ class ModelTrainer:
                 
                 best_model = random_search.best_estimator_
                 logging.info(f"Best tuned model: {best_model}")
+                mlflow.log_params(random_search.best_params_)
+                mlflow.log_metric("best_cv_f1", random_search.best_score_)
+
             else:
                 # Simple XGBoost without tuning (notebook approach)
                 logging.info("Training XGBoost without hyperparameter tuning (notebook approach)")

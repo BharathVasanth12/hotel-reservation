@@ -150,7 +150,7 @@ class DataPreprocessor:
             logging.info(f"Preprocessed data shape: {processed_df.shape}")
             
             # Save single preprocessed file
-            # NOTE: Train/test split and SMOTE will be done in model_training.py
+            # NOTE: Train/test split and SMOTE will be done in model_building.py
             self.save_data(processed_df, self.processed_file_path)
             logging.info("Data preprocessing pipeline completed successfully")
             logging.info("Note: Train/test split and SMOTE will be handled in model training")
